@@ -6,7 +6,7 @@ import (
 )
 
 type TransactionRepository interface {
-	Savetransaction(transaction, Transaction, creditCard CreditCard) error
+	SaveTransaction(transaction Transaction, creditCard CreditCard) error
 	GetCreditCard(creditCard CreditCard) (CreditCard, error)
 	CreateCreditCard(creditCard CreditCard) error
 }
@@ -29,7 +29,7 @@ func NewTransaction() *Transaction {
 }
 
 func (t *Transaction) ProcessAndValidate(creditCard *CreditCard) {
-	if t.Amount = creditCard.Balance > creditCard.Limit {
+	if t.Amount+creditCard.Balance > creditCard.Limit {
 		t.Status = "rejected"
 	} else {
 		t.Status = "approved"

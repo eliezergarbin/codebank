@@ -4,10 +4,10 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/eliezergarbin/codebank/domain"
-	"github.com/eliezergarbin/codebank/infrastructure/repositiry"
+	"github.com/eliezergarbin/codebank/infrastructure/repository"
 	"github.com/eliezergarbin/codebank/usecase"
 	"log"
-	_ "github.com/lib/pg"
+	_ "github.com/lib/pq"
 )
 
 func main() {

@@ -1,7 +1,8 @@
-package TransactionRepository
+package repository
 
 import (
 	"database/sql"
+	"errors"
 	"github.com/eliezergarbin/codebank/domain"
 )
 
@@ -13,13 +14,12 @@ func NewTransactionRepositoryDb(db *sql.DB) *TransactionRepositoryDb {
 	return &TransactionRepositoryDb{db: db}
 }
 
-func (t *TransactionRepositoryDb) SaveTrasaction(transaction domain.Transaction, creditCard domain.CreditCard) error {
-	stmt, err := t.dbPrepare(`insert into transactions(id, credit_card_id, amount, status, description, store, created_at)
-	values($1, $2, $3, $4, $5, $6, $7)`)
+func (t *TransactionRepositoryDb) SaveTransaction(transaction domain.Transaction, creditCard domain.CreditCard) error {
+	stmt, err := t.db.Prepare( `insert into transactions(id, credit_card_id, amount, status, description, store, created_at)
+								values($1, $2, $3, $4, $5, $6, $7)`)
 	if err != nil {
 		return err
 	}
-
 	_, err = stmt.Exec(
 		transaction.ID,
 		transaction.CreditCardId,
@@ -27,7 +27,7 @@ func (t *TransactionRepositoryDb) SaveTrasaction(transaction domain.Transaction,
 		transaction.Status,
 		transaction.Description,
 		transaction.Store,
-		transaction.CreatedAt,
+		transaction.CreatedAt, 
 	)
 	if err != nil {
 		return err
