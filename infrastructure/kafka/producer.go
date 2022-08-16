@@ -18,12 +18,12 @@ func (k *KafkaProducer) SetupProducer(bootstrapServer string) {
 	k.Producer, _ = ckafka.NewProducer(configMap)
 }
 
-func (k *kafkaProducer) publish(msg string, topic string) error {
+func (k *KafkaProducer) Publish(msg string, topic string) error {
 	message := &ckafka.Message{	
 		TopicPartition: ckafka.TopicPartition{Topic: &topic, Partition: ckafka.PartitionAny},
-		value: []byte(msg),
+		Value: []byte(msg),
 	}
-	err := k.Producer.Produce(message, deliveryChan: nil)
+	err := k.Producer.Produce(message, nil)
 	if err != nil {
 		return err
 	}

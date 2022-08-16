@@ -3,21 +3,20 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"github.com/eliezergarbin/codebank/domain"
+	"github.com/eliezergarbin/codebank/infrastructure/grpc/server"
+	"github.com/eliezergarbin/codebank/infrastructure/kafka"
 	"github.com/eliezergarbin/codebank/infrastructure/repository"
 	"github.com/eliezergarbin/codebank/usecase"
-	"log"
 	_ "github.com/lib/pq"
+	"log"
 )
 
 func main() {
 	db := setupDb()
 	defer db.Close()
 	producer := setupKafkaProducer()
-	ProcessTransactionUseCase := setupTransactionUseCase(db, producer)
+	processTransactionUseCase := setupTransactionUseCase(db, producer)
 	serveGrpc(processTransactionUseCase)
-
-
 }
 
 func setupTransactionUseCase(db *sql.DB, producer kafka.KafkaProducer) usecase.UseCaseTransaction {
@@ -29,7 +28,7 @@ func setupTransactionUseCase(db *sql.DB, producer kafka.KafkaProducer) usecase.U
 
 func setupKafkaProducer() kafka.KafkaProducer {
 	producer := kafka.NewKafkaProducer()
-	producer.SetupProducer(os.Getenv("KafkaBootstrapServers"))
+	producer.SetupProducer("host.docker.internal:9094")
 	return producer
 }
 
@@ -51,6 +50,7 @@ func setupDb() *sql.DB {
 func serveGrpc(processTransactionUseCase usecase.UseCaseTransaction) {
 	grpcServer := server.NewGRPCServer()
 	grpcServer.ProcessTransactionUseCase = processTransactionUseCase
+	fmt.Println("Rodando gRPC Server")
 	grpcServer.Serve()
 }
 

@@ -4,7 +4,6 @@ import (
 	"github.com/eliezergarbin/codebank/usecase"
 	"github.com/eliezergarbin/codebank/infrastructure/grpc/pb"
 	"github.com/eliezergarbin/codebank/infrastructure/grpc/service"
-	"github.com/eliezergarbin/codebank/usecase"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"
