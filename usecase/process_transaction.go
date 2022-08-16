@@ -8,6 +8,7 @@ import (
 
 type UseCaseTransaction struct {
 	TransactionRepository domain.TransactionRepository
+	KafkaProducer kafka.kafkaProducer
 }
 
 func NewUseCaseTransaction(transactionRepository domain.TransactionRepository) UseCaseTransaction {
@@ -26,6 +27,16 @@ func (u UseCaseTransaction) ProcessTransaction(transactionDto dto.Transaction) (
 	t := u.newTransaction(transactionDto, ccBalanceAndLimit)
 	t.ProcessAndValidate(creditCard)
 	err = u.TransactionRepository.SaveTransaction(*t, *creditCard)
+	if err != nil {
+		return domain.Transaction{}, err
+	}
+	transactionDto.ID = t.ID
+	transactionDto.CreatedAt = t.CreatedAt
+	transactionJson, err := json.Marshal(transactionDto)
+	if err != nil { 
+		return domain.Transaction{}, err
+	}
+	err = u.KafkaProducer.publish(string(transactionJson), topic:"payments")
 	if err != nil {
 		return domain.Transaction{}, err
 	}
