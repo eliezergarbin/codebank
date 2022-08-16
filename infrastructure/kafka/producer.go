@@ -11,22 +11,20 @@ func NewKafkaProducer() KafkaProducer {
 }
 
 func (k *KafkaProducer) SetupProducer(bootstrapServer string) {
-	configMap := &ckafka.ConfigMap {
+	configMap := &ckafka.ConfigMap{
 		"bootstrap.servers":bootstrapServer,
 	}
-
 	k.Producer, _ = ckafka.NewProducer(configMap)
 }
 
 func (k *KafkaProducer) Publish(msg string, topic string) error {
-	message := &ckafka.Message{	
+	message  := &ckafka.Message{
 		TopicPartition: ckafka.TopicPartition{Topic: &topic, Partition: ckafka.PartitionAny},
-		Value: []byte(msg),
+		Value:          []byte(msg),
 	}
 	err := k.Producer.Produce(message, nil)
 	if err != nil {
 		return err
 	}
 	return nil
-
 }
