@@ -19,7 +19,7 @@ export interface Product {
       created_at: "2022-06-06T00:00:00",
     },
     {
-      id: "uuid",
+      id: "uuid2",
       name: "produto teste222",
       description: "muito muito texto222",
       price: 50.52,

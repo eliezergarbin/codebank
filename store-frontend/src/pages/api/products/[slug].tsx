@@ -10,4 +10,4 @@ export default function handler(
   product
     ? res.status(200).json(product)
     : res.status(404).json({ message: "Product not found" });
-}
+} 
