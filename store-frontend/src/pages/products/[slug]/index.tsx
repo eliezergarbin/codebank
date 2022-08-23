@@ -13,6 +13,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import http from "../../../http";
 import { Product } from "../../../model";
+import  Link from "next/link";
 
 interface ProductDetailPageProps {
   product: Product;
@@ -35,9 +36,15 @@ const ProductDetailPage: NextPage<ProductDetailPageProps> = ({ product }) => {
           subheader={`R$ ${product.price}`}
         />
         <CardActions>
-          <Button size="small" color="primary" component="a">
-            Comprar
-          </Button>
+          <Link
+            href="/products/[slug]/order"
+            as={`/products/${product.slug}/order`}
+            passHref
+          >
+            <Button size="small" color="primary" component="a">
+              Comprar
+            </Button>
+          </Link>
         </CardActions>
         <CardMedia style={{ paddingTop: "56%" }} image={product.image_url} />
         <CardContent>
@@ -60,7 +67,7 @@ export const getStaticProps: GetStaticProps<
   try {
     const { data: product } = await http.get(`products/${slug}`);
     console.log(product);
-    
+
     return {
       props: {
         product,

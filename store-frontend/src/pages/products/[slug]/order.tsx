@@ -1,15 +1,13 @@
 import {
-  Card,
-  CardMedia,
-  CardContent,
-  CardActions,
   Typography,
   Button,
-  CardHeader,
   ListItem,
   ListItemAvatar,
   ListItemText,
   Avatar,
+  TextField,
+  Grid,
+  Box,
 } from "@material-ui/core";
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
@@ -40,6 +38,37 @@ const OrderPage: NextPage<OrderPageProps> = ({ product }) => {
           secondary={`R$ ${product.price}`}
         />
       </ListItem>
+      <Typography component="h2" variant="h6" gutterBottom>
+        Pague com cartão de crédito
+      </Typography>
+      <form>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6}>
+            <TextField label="Nome" required fullWidth/>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField label="Numero do cartão" required fullWidth inputProps={{maxLength: 16}}/>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField type="number" label="CVV" required fullWidth/>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Grid container spacing={3}>
+            < Grid item xs={6}>
+                <TextField type="number" label="Expiração mês" required fullWidth/>
+              </Grid>
+              <Grid item xs={6}>
+                <TextField type="number" label="Expiração ano" required fullWidth/>
+              </Grid>
+            </Grid>
+          </Grid>
+          </Grid>
+          <Box marginTop={1}>
+            <Button type="submit" variant="contained" color="primary" fullWidth>
+              Pagar
+            </Button>
+          </Box>
+      </form>
     </div>
   );
 };
@@ -47,19 +76,18 @@ const OrderPage: NextPage<OrderPageProps> = ({ product }) => {
 export default OrderPage;
 
 export const getServerSideProps: GetServerSideProps<
-OrderPageProps,
+  OrderPageProps,
   { slug: string }
 > = async (context) => {
   const { slug } = context.params!;
   try {
     const { data: product } = await http.get(`products/${slug}`);
     console.log(product);
-    
+
     return {
       props: {
         product,
       },
-      revalidate: 1 * 60 * 2,
     };
   } catch (e) {
     if (axios.isAxiosError(e) && e.response?.status === 404) {
